@@ -29,7 +29,7 @@ pygame.display.set_caption("test")
 ball = pygame.image.load("blue.png").convert()
 black = pygame.image.load("black.png").convert()
 white = pygame.image.load("white.png").convert()
-
+brown = pygame.image.load("brown.png").convert()
 
 
 b_x = 5
@@ -39,13 +39,15 @@ map_height = 100
 map_width = 100
 
 map = map_gen.gen_filled_map(100, 100)
-map_gen.empty_a_room(map, 5, 5, 20, 20)
-map_gen.empty_a_room(map, 25, 17, 8, 1)
-map_gen.empty_a_room(map, 33, 10, 5, 20)
+map_gen.fill_with_rooms(map)
 
 
-x_offset = 3
-y_offset = 7
+
+x_offset = map[-4] - 5
+y_offset = map[-3] - 5
+
+
+
 
 screen.fill(pygame.Color(255, 0, 0))
 
@@ -56,6 +58,7 @@ while 1:
 			pygame.quit()
 			sys.exit()
 		elif event.type == KEYDOWN:
+			
 			if event.key == K_LEFT:
 				if check_empty(b_x - 1, b_y, x_offset, y_offset, map_width, map_height):
 					if x_offset > 0:
@@ -87,8 +90,13 @@ while 1:
 	
 	for i in range(0, SCREEN_HEIGHT):
 		for j in range(0, SCREEN_WIDTH):
-			if get_tile(j, i, x_offset, y_offset, map_width, map_height):
+			t = get_tile(j, i, x_offset, y_offset, map_width, map_height)
+			if  t == 1:
 				screen.blit(black, (TILE_WIDTH * j, TILE_HEIGHT * i))
+			elif t == 2:	
+					screen.blit(brown, (TILE_WIDTH * j, TILE_HEIGHT * i))
+			elif t == 3:	
+					screen.blit(ball, (TILE_WIDTH * j, TILE_HEIGHT * i))		
 			else:
 				screen.blit(white, (TILE_WIDTH * j, TILE_HEIGHT * i))
 	

@@ -56,6 +56,7 @@ def fill_with_rooms(m):
 	
 def gen_next_node(m):	
 	p = pick_wall(m)
+	wall_good = False
 	hl = gen_normal_int(HALL_MIN, HALL_MAX)
 	rx = gen_normal_int(ROOM_MIN, ROOM_MAX)
 	ry = gen_normal_int(ROOM_MIN, ROOM_MAX)
@@ -64,7 +65,7 @@ def gen_next_node(m):
 	if m[p - 1] == 0:
 		print "left"
 		m[p] = 1
-		print empty_a_room(m, loc[0] + 1, loc[1], hl, 1)
+		wall_good = empty_a_room(m, loc[0] + 1, loc[1], hl, 1)
 		m[p + hl + 1] = 1
 		print empty_a_room(m, loc[0] + hl + 1, loc[1] - (ry/2), rx, ry)
 		m[p + hl] = 0
@@ -74,7 +75,7 @@ def gen_next_node(m):
 	elif m[p + 1] == 0:
 		print "right"
 		m[p] = 1
-		print empty_a_room(m, loc[0] - hl, loc[1], hl, 1)
+		wall_good = empty_a_room(m, loc[0] - hl, loc[1], hl, 1)
 		m[p - hl - 1] = 1
 		print empty_a_room(m, loc[0] - hl - rx, loc[1] - (ry/2), rx, ry)
 		m[p - hl] = 0
@@ -84,7 +85,7 @@ def gen_next_node(m):
 		if(m[(loc[1] + 1) * m[-2] + loc[0]] == 0):
 			print "down"
 			m[p] = 1
-			print empty_a_room(m, loc[0], loc[1] - hl, 1, hl)
+			wall_good = empty_a_room(m, loc[0], loc[1] - hl, 1, hl)
 			m[(loc[1] - hl - 1) * m[-2] + loc[0]] = 1
 			print empty_a_room(m, loc[0] - (rx/2), loc[1] - hl - ry - 1, rx, ry) 
 			m[(loc[1] - hl - 1) * m[-2] + loc[0]] = 0
@@ -92,38 +93,42 @@ def gen_next_node(m):
 		else:
 			print "up"
 			m[p] = 1
-			print empty_a_room(m, loc[0], loc[1] + 1, 1, hl)
+			wall_good = empty_a_room(m, loc[0], loc[1] + 1, 1, hl)
 			m[(loc[1] + hl + 1) * m[-2] + loc[0]] = 1
 			print empty_a_room(m, loc[0] - (rx/2), loc[1] + hl + 2, rx, ry)
 			m[(loc[1] + hl + 1) * m[-2] + loc[0]] = 0
 			
 			
-			
-	m[p] = 0	
+	print "wall_good:" + str(wall_good)		
+	if(wall_good):
+		m[p] = 0	
 		
 def empty_a_room(m, x, y, w, h):
-	# requires a space of w + 2, h + 2 (one more on each side)
-	for i in range(y - 1, y + h + 1):
-		for j in range(x, x + w):
-			if m[i * m[-2] + j] != 1:
+	if x > 0 and y > 0 and x + w < m[-2] and y + h < m[-1]:
+		# requires a space of w + 2, h + 2 (one more on each side)
+		for i in range(y - 1, y + h + 1):
+			for j in range(x, x + w):
+				if m[i * m[-2] + j] != 1:
+					return False
+		for i in range(y, y + h):
+			if m[i + m[-2] + x - 1] != 1:
 				return False
-	for i in range(y, y + h):
-		if m[i + m[-2] + x - 1] != 1:
-			return False
-		if m[i + m[-2] + x + w + 1] != 1:
-			return False	
-			
-	
-	for i in range(y, y+h):
-		m[i * m[-2] + x - 1] = 2
-		m[i * m[-2] + x + w] = 2
-		for j in range(x, x + w):
-			m[i * m[-2] + j] = 0
-			m[(y - 1) * m[-2] + j] = 2
-			m[(y + h) * m[-2] + j] = 2
-	
-	
-	return [x + (w/2), y + (h/2)]
+			if m[i + m[-2] + x + w + 1] != 1:
+				return False	
+				
+		
+		for i in range(y, y+h):
+			m[i * m[-2] + x - 1] = 2
+			m[i * m[-2] + x + w] = 2
+			for j in range(x, x + w):
+				m[i * m[-2] + j] = 0
+				m[(y - 1) * m[-2] + j] = 2
+				m[(y + h) * m[-2] + j] = 2
+		
+		
+		return [x + (w/2), y + (h/2)]
+	else:
+		return False
 
 def pick_wall(m):
 	pick = -1

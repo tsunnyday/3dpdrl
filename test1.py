@@ -94,7 +94,7 @@ while 1:
 			if  t == 1:
 				screen.blit(black, (TILE_WIDTH * j, TILE_HEIGHT * i))
 			elif t == 2:	
-					screen.blit(brown, (TILE_WIDTH * j, TILE_HEIGHT * i))
+					screen.blit(black, (TILE_WIDTH * j, TILE_HEIGHT * i))
 			elif t == 3:	
 					screen.blit(ball, (TILE_WIDTH * j, TILE_HEIGHT * i))		
 			else:

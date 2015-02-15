@@ -49,6 +49,12 @@ def fill_with_rooms(m):
 	l = empty_a_room(m, m[-2]/2, m[-1]/2, gen_normal_int(ROOM_MIN, ROOM_MAX), gen_normal_int(ROOM_MIN, ROOM_MAX))
 	m[-4] = l[0]
 	m[-3] = l[1]
+	
+	for i in range(0, 10):
+		gen_next_node(m)
+	
+	
+def gen_next_node(m):	
 	p = pick_wall(m)
 	hl = gen_normal_int(HALL_MIN, HALL_MAX)
 	rx = gen_normal_int(ROOM_MIN, ROOM_MAX)
@@ -59,25 +65,40 @@ def fill_with_rooms(m):
 		print "left"
 		m[p] = 1
 		print empty_a_room(m, loc[0] + 1, loc[1], hl, 1)
-		
-		
+		m[p + hl + 1] = 1
+		print empty_a_room(m, loc[0] + hl + 1, loc[1] - (ry/2), rx, ry)
+		m[p + hl] = 0
+			
 		
 		
 	elif m[p + 1] == 0:
 		print "right"
 		m[p] = 1
-	
 		print empty_a_room(m, loc[0] - hl, loc[1], hl, 1)
+		m[p - hl - 1] = 1
+		print empty_a_room(m, loc[0] - hl - rx, loc[1] - (ry/2), rx, ry)
+		m[p - hl] = 0
+		
 	else:
 		
 		if(m[(loc[1] + 1) * m[-2] + loc[0]] == 0):
 			print "down"
 			m[p] = 1
 			print empty_a_room(m, loc[0], loc[1] - hl, 1, hl)
+			m[(loc[1] - hl - 1) * m[-2] + loc[0]] = 1
+			print empty_a_room(m, loc[0] - (rx/2), loc[1] - hl - ry - 1, rx, ry) 
+			m[(loc[1] - hl - 1) * m[-2] + loc[0]] = 0
+			
 		else:
 			print "up"
 			m[p] = 1
 			print empty_a_room(m, loc[0], loc[1] + 1, 1, hl)
+			m[(loc[1] + hl + 1) * m[-2] + loc[0]] = 1
+			print empty_a_room(m, loc[0] - (rx/2), loc[1] + hl + 2, rx, ry)
+			m[(loc[1] + hl + 1) * m[-2] + loc[0]] = 0
+			
+			
+			
 	m[p] = 0	
 		
 def empty_a_room(m, x, y, w, h):

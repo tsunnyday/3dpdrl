@@ -6,10 +6,10 @@ Layout of maps should be:
 
 """
 
-ROOM_MIN = 5
-ROOM_MAX = 15
-HALL_MIN = 6
-HALL_MAX = 20
+ROOM_MIN = 3
+ROOM_MAX = 8
+HALL_MIN = 3
+HALL_MAX = 12
 
 
 def gen_filled_map(w, h):
@@ -50,7 +50,7 @@ def fill_with_rooms(m):
 	m[-4] = l[0]
 	m[-3] = l[1]
 	
-	for i in range(0, 10):
+	for i in range(0, 60):
 		gen_next_node(m)
 	
 	

@@ -1,4 +1,5 @@
 import random
+import math
 
 """
 Layout of maps should be:
@@ -6,10 +7,15 @@ Layout of maps should be:
 
 """
 
-ROOM_MIN = 3
-ROOM_MAX = 8
+ROOM_MIN = 5
+ROOM_MAX = 16
 HALL_MIN = 3
 HALL_MAX = 12
+
+MINIMUM_STAIR_DISTANCE = 50
+
+def get_distance(x1, y1, x2, y2):
+	return math.sqrt(pow(x1-x2, 2) + pow(y1-y2, 2))
 
 
 def gen_filled_map(w, h):
@@ -52,6 +58,16 @@ def fill_with_rooms(m):
 	
 	for i in range(0, 60):
 		gen_next_node(m)
+		
+	#make stairs
+	pick = 0
+	pcoor = [0,0]
+	while (m[pick] != 0) or (get_distance(m[-4], m[-3], pcoor[0], pcoor[1]) < MINIMUM_STAIR_DISTANCE):
+		pick = random.randint(0, len(m) - 5)
+		pcoor = convert_int_to_x_and_y(m, pick)
+	m[pick] = 7
+	print "FLAG IS AT: " + str(pcoor)
+	return pcoor
 	
 	
 def gen_next_node(m):	
@@ -133,6 +149,8 @@ def empty_a_room(m, x, y, w, h):
 		return [x + (w/2), y + (h/2)]
 	else:
 		return False
+
+
 
 def pick_wall(m):
 	pick = -1

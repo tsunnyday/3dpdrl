@@ -8,15 +8,19 @@ TILE_WIDTH = 32
 SCREEN_HEIGHT = 11
 SCREEN_WIDTH = 11
 
+MAP_HEIGHT = 300
+MAP_WIDTH = 200
 
+BALL_ON_SCREEN_X = 5
+BALL_ON_SCREEN_Y = 5
 
-def check_empty(x, y, x_o, y_o, m_w, m_h):
-	if get_tile(x, y, x_o, y_o, m_w, m_h) == 0:
+def check_empty(x_o, y_o, m_w, m_h):
+	if get_tile(x_o, y_o, m_w, m_h) in [0,7]:
 		return True
 	return False
 	
-def get_tile(x, y, x_o, y_o, m_w, m_h):
-	return map[(m_w * (y + y_o)) + x + x_o]
+def get_tile(x_o, y_o, m_w, m_h):
+	return map[(m_w * (y_o)) + x_o]
 
 
 
@@ -30,16 +34,13 @@ ball = pygame.image.load("blue.png").convert()
 black = pygame.image.load("black.png").convert()
 white = pygame.image.load("white.png").convert()
 brown = pygame.image.load("brown.png").convert()
+stairs = pygame.image.load("stairs.png").convert()
 
 
-b_x = 5
-b_y = 5
 
-map_height = 100
-map_width = 100
 
-map = map_gen.gen_filled_map(100, 100)
-map_gen.fill_with_rooms(map)
+map = map_gen.gen_filled_map(MAP_WIDTH, MAP_HEIGHT)
+flag_coor = map_gen.fill_with_rooms(map)
 
 
 
@@ -60,47 +61,56 @@ while 1:
 		elif event.type == KEYDOWN:
 			
 			if event.key == K_LEFT:
-				if check_empty(b_x - 1, b_y, x_offset, y_offset, map_width, map_height):
-					if x_offset > 0:
+				if check_empty(BALL_ON_SCREEN_X + x_offset - 1, BALL_ON_SCREEN_Y + y_offset, MAP_WIDTH, MAP_HEIGHT):
 						x_offset -= 1
-					else:
-						b_x -= 1
+					
+					
 			elif event.key == K_RIGHT:
-				if check_empty(b_x + 1, b_y, x_offset, y_offset, map_width, map_height):
-					if x_offset < map_width - SCREEN_WIDTH:
+				if check_empty(BALL_ON_SCREEN_X + x_offset + 1, BALL_ON_SCREEN_Y + y_offset, MAP_WIDTH, MAP_HEIGHT):
 						x_offset += 1
-					else:
-						b_x += 1
+					
 			elif event.key == K_UP:
-				if check_empty(b_x, b_y - 1, x_offset, y_offset, map_width, map_height):
-					if y_offset > 0:
+				if check_empty(BALL_ON_SCREEN_X + x_offset, BALL_ON_SCREEN_Y + y_offset - 1, MAP_WIDTH, MAP_HEIGHT):
 						y_offset -= 1
-					else:
-						b_y -= 1
-			elif event.key == K_DOWN:
-				if check_empty(b_x, b_y + 1, x_offset, y_offset, map_width, map_height):
-					if y_offset < map_height - SCREEN_HEIGHT:
-						y_offset += 1
-					else:
-						b_y += 1
 				
+			elif event.key == K_DOWN:
+				if check_empty(BALL_ON_SCREEN_X + x_offset, BALL_ON_SCREEN_Y + y_offset + 1, MAP_WIDTH, MAP_HEIGHT):
+						y_offset += 1
+			elif event.key == K_RSHIFT:		
+				print "POS:" + str(BALL_ON_SCREEN_X + x_offset) + "," + str(BALL_ON_SCREEN_Y + y_offset)
+			elif event.key == K_RETURN:
+				print "FLAG:" + str(flag_coor)
+		
+		
+	if(get_tile(BALL_ON_SCREEN_X + x_offset, BALL_ON_SCREEN_Y + y_offset, MAP_WIDTH, MAP_HEIGHT) == 7):
+		map = map_gen.gen_filled_map(MAP_WIDTH, MAP_HEIGHT)
+		flag_coor =  map_gen.fill_with_rooms(map)
+
+
+
+		x_offset = map[-4] - 5
+		y_offset = map[-3] - 5
+	
+		
 		
 		
 	screen.fill(pygame.Color(255, 0, 0))
 	
 	for i in range(0, SCREEN_HEIGHT):
 		for j in range(0, SCREEN_WIDTH):
-			t = get_tile(j, i, x_offset, y_offset, map_width, map_height)
+			t = get_tile(j + x_offset, i + y_offset, MAP_WIDTH, MAP_HEIGHT)
 			if  t == 1:
 				screen.blit(black, (TILE_WIDTH * j, TILE_HEIGHT * i))
 			elif t == 2:	
 					screen.blit(black, (TILE_WIDTH * j, TILE_HEIGHT * i))
 			elif t == 3:	
-					screen.blit(ball, (TILE_WIDTH * j, TILE_HEIGHT * i))		
+					screen.blit(ball, (TILE_WIDTH * j, TILE_HEIGHT * i))	
+			elif t == 7:
+					screen.blit(stairs, (TILE_WIDTH * j, TILE_HEIGHT * i))
 			else:
 				screen.blit(white, (TILE_WIDTH * j, TILE_HEIGHT * i))
 	
-	screen.blit(ball, (b_x * TILE_WIDTH, b_y * TILE_HEIGHT))
+	screen.blit(ball, (BALL_ON_SCREEN_X * TILE_WIDTH, BALL_ON_SCREEN_Y * TILE_HEIGHT))
 	pygame.display.update()
 	
 	

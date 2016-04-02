@@ -10,7 +10,7 @@ Layout of maps should be:
 ROOM_MIN = 5
 ROOM_MAX = 16
 HALL_MIN = 3
-HALL_MAX = 12
+HALL_MAX = 8
 
 MINIMUM_STAIR_DISTANCE = 50
 
@@ -20,14 +20,14 @@ def get_distance(x1, y1, x2, y2):
 
 def gen_filled_map(w, h):
 
-	map = []
+	game_map = []
 	for i in range(0, w * h):
-		map.append(1)
-	map.append(0)
-	map.append(0)
-	map.append(w)
-	map.append(h)
-	return map
+		game_map.append(1)
+	game_map.append(0)
+	game_map.append(0)
+	game_map.append(w)
+	game_map.append(h)
+	return game_map
 
 def gen_normal_int(least, most):
 	mean = (most - least)/ 2.0
@@ -56,7 +56,7 @@ def fill_with_rooms(m):
 	m[-4] = l[0]
 	m[-3] = l[1]
 	
-	for i in range(0, 60):
+	for i in range(0, 45):
 		gen_next_node(m)
 		
 	#make stairs
